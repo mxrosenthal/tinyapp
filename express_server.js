@@ -10,25 +10,40 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  b2xVn2: 'http://www.lighthouselabs.ca',
-  '9sm5xK': 'http://www.google.com'
+  // b2xVn2: 'http://www.lighthouselabs.ca',
+  // '9sm5xK': 'http://www.google.com'
 };
 
 const activeUsers = {};
 
-app.get('/login', (req, res) => {
-  res.redirect('/login');
-});
+// app.get('/login', (req, res) => {
+//   res.redirect('/login');
+// });
 
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  let templateVars = {
+    username: req.cookies['username'],
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  };
+  // res.render('urls_new', templateVars);
+  res.render('urls_new', templateVars);
 });
-app.get('/ulogin', (req, res) => {
-  res.render('urls_user');
+
+app.get('/login', (req, res) => {
+  let templateVars = {
+    username: req.cookies['username'],
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  };
+  // console.log('logging in?');
+  // res.render('urls_user', templateVars);
+  res.render('urls_user', templateVars);
 });
 
 app.get('/urls/:shortURL', (req, res) => {
   let templateVars = {
+    username: req.cookies['username'],
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
@@ -36,7 +51,11 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    username: req.cookies['username'],
+    urls: urlDatabase
+  };
+  // console.log(templateVars);
   res.render('urls_index', templateVars);
 });
 
@@ -52,6 +71,14 @@ app.get('/u/:shortURL', (req, res) => {
 //POST
 //generates random str for a given longURL
 app.post('/urls', (req, res) => {
+  if (
+    req.body.longURL === '' ||
+    req.body.longURL === [] ||
+    req.body.longURL === '[]'
+  ) {
+    res.redirect('/urls');
+    r;
+  }
   urlDatabase[generateRandomString()] = req.body.longURL;
   res.redirect('/urls');
 });
@@ -65,7 +92,7 @@ app.post('/urls/:shortURL', (req, res) => {
   // console.log('Database: ', urlDatabase);
   urlDatabase[shortURL] = longURL;
   // console.log('Database: ', urlDatabase);
-  res.redirect(`/urls/${shortURL}`);
+  res.redirect('/urls');
 });
 
 //Delete longURL with it's shortURL key from the database.
@@ -81,9 +108,15 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 // 2. submit username on tinyapp.
 // 3. in CDT go to 'application' at the top. then 'cookies' on the left.
 //    and the submission should be visible.
-app.post('/ulogin', (req, res) => {
+app.post('/login', (req, res) => {
   let newUser = req.body.username;
   res.cookie('username', newUser).redirect('/urls');
+});
+
+//logging out
+app.post('/logout', (req, res) => {
+  // let newUser = req.body.username;
+  res.clearCookie('username').redirect('/urls');
 });
 
 app.listen(PORT, () => {
@@ -95,8 +128,3 @@ function generateRandomString() {
     .toString(36)
     .slice(1);
 }
-
-// console.log(generateRandomString());
-// console.log(generateRandomString());
-// console.log(generateRandomString());
-// console.log(generateRandomString());

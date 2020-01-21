@@ -23,14 +23,14 @@
         </p>
       </div>
       <div><form method="POST" action="/urls/<%= shortURL %>">
-         <label for="new-url">URL:</label>
+         <label for="new-url">New URL:</label>
          <input 
             id="new-url"
             class="form-control"
             type="text"
             name="longURL"
-            placeholder=<%= longURL %>
-            style="width: 300px; margin: 1em; display: inline-block"
+            placeholder="<%= longURL %>""
+            style="width: 300px; margin: 1em; display: inline-block;"
           />
         <button type="submit">
           Update
