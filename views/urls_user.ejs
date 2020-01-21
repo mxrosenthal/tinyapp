@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <%- include('partials/_header') %>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
     <link
@@ -10,33 +14,30 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
-    <title>URL - TinyApp Example</title>
+
+    <title>New User - TinyApp Example</title>
   </head>
 
   <body>
-    <div class="card text-center">
-      <div class="card-header"></div>
-      <div class="card-body">
-        <h5 class="card-title">Long URL for: <%= longURL %></h5>
-        <p class="card-text">
-          Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a>
-        </p>
-      </div>
-      <div><form method="POST" action="/urls/<%= shortURL %>">
-         <label for="new-url">URL:</label>
-         <input 
-            id="new-url"
+    <%- include('partials/_header') %>
+
+    <main style="margin: 1em;">
+      <h3>Log in</h3>
+      <form class="form-inline" id="new_user" action="/ulogin" method="POST">
+        <div class="form-group mb-2">
+          <label for="longURL">Enter your username:</label>
+          <input
+            id="new_user"
             class="form-control"
             type="text"
-            name="longURL"
-            placeholder=<%= longURL %>
-            style="width: 300px; margin: 1em; display: inline-block"
+            name="username"
+            placeholder="hotShenannigans493"
+            style="width: 300px; margin: 1em"
           />
-        <button type="submit">
-          Update
-        </button></div>
-      <div class="card-footer text-muted"></div>
-    </div>
+          <button type="submit" class="btn btn-primary">Log in</button>
+        </div>
+      </form>
+    </main>
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
@@ -11,8 +14,17 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com'
 };
 
+const activeUsers = {};
+
+app.get('/login', (req, res) => {
+  res.redirect('/login');
+});
+
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
+});
+app.get('/ulogin', (req, res) => {
+  res.render('urls_user');
 });
 
 app.get('/urls/:shortURL', (req, res) => {
@@ -28,16 +40,8 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
-app.get('/hello', (req, res) => {
-  res.send('<html><body>Hello <b>World</b></body></html>\n');
-});
-
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
-});
-
-app.get('/', (req, res) => {
-  res.send('Hello!');
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -46,25 +50,40 @@ app.get('/u/:shortURL', (req, res) => {
 });
 
 //POST
+//generates random str for a given longURL
 app.post('/urls', (req, res) => {
-  //updating the database with the new key: value
-  //a.kda
   urlDatabase[generateRandomString()] = req.body.longURL;
-  // console.log('urlDatabase: ', urlDatabase);
-  res.send('Ok'); // Respond with 'Ok' (we will replace this)
+  res.redirect('/urls');
 });
 
+//request to change the longURL associated with a given shortURL
+app.post('/urls/:shortURL', (req, res) => {
+  // console.log('req: ', req.params.shortURL);
+  const longURL = req.body.longURL;
+  // console.log(longURL);
+  const shortURL = req.params.shortURL;
+  // console.log('Database: ', urlDatabase);
+  urlDatabase[shortURL] = longURL;
+  // console.log('Database: ', urlDatabase);
+  res.redirect(`/urls/${shortURL}`);
+});
+
+//Delete longURL with it's shortURL key from the database.
 app.post('/urls/:shortURL/delete', (req, res) => {
-  // console.log('req.params.shortURL: ', req.params.shortURL);
-  // console.log('res.params.shortURL: ', res.params.shortURL);
-  // console.log(urlDatabase);
   let shorty = req.params.shortURL;
-  console.log('shorty: ', shorty);
-  let URL = urlDatabase[shorty];
+  // let URL = urlDatabase[shorty];
   delete urlDatabase[shorty];
-  console.log(urlDatabase);
-  // res.send(`URL: ${URL} was deleted.`);
   res.redirect('/urls');
+});
+
+//add users logged into a cookie. You can check this cookie in the CDT.
+// 1. open chrom dev tools, clear cache if full.
+// 2. submit username on tinyapp.
+// 3. in CDT go to 'application' at the top. then 'cookies' on the left.
+//    and the submission should be visible.
+app.post('/ulogin', (req, res) => {
+  let newUser = req.body.username;
+  res.cookie('username', newUser).redirect('/urls');
 });
 
 app.listen(PORT, () => {
