@@ -16,10 +16,6 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  // console.log('short url: ', req.params.shortURL);
-  // console.log('aaaaa:', urlDatabase[req.params.shortURL]);
-  // console.log(params);
-
   let templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
@@ -45,24 +41,30 @@ app.get('/', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  // console.log('+++++++++++++++++++++++++++++++req: ', req.params.shortURL);
-  // console.log(
-  //   '-------------------------------res: ',
-  //   urlDatabase[req.params.shortURL]
-  // );
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
 //POST
 app.post('/urls', (req, res) => {
-  // console.log(req.body); // Log the POST request body to the console
-
   //updating the database with the new key: value
   //a.kda
   urlDatabase[generateRandomString()] = req.body.longURL;
   // console.log('urlDatabase: ', urlDatabase);
   res.send('Ok'); // Respond with 'Ok' (we will replace this)
+});
+
+app.post('/urls/:shortURL/delete', (req, res) => {
+  // console.log('req.params.shortURL: ', req.params.shortURL);
+  // console.log('res.params.shortURL: ', res.params.shortURL);
+  // console.log(urlDatabase);
+  let shorty = req.params.shortURL;
+  console.log('shorty: ', shorty);
+  let URL = urlDatabase[shorty];
+  delete urlDatabase[shorty];
+  console.log(urlDatabase);
+  // res.send(`URL: ${URL} was deleted.`);
+  res.redirect('/urls');
 });
 
 app.listen(PORT, () => {
