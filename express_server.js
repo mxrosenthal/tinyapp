@@ -9,13 +9,21 @@ app.use(cookieParser());
 
 app.set('view engine', 'ejs');
 
-const urlDatabase = {};
+const urlDatabase = {
+  // b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
+  // i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+};
 
 const users = {
   user2RandomID: {
     id: 'user2RandomID',
     email: 'user2@example.com',
     password: '123'
+  },
+  user5RandomID: {
+    id: 'buttyButtler',
+    email: 'handCramp@shebangs.com',
+    password: '456'
   }
 };
 
@@ -111,15 +119,24 @@ app.post('/urls', (req, res) => {
     res.redirect('/urls');
     r;
   }
+  const shortURL = generateRandomString();
+  const longURL = req.body.longURL;
+  const userId = req.cookies.user_id;
 
-  urlDatabase[generateRandomString()] = req.body.longURL;
+  urlDatabase[shortURL] = {
+    longURL: longURL,
+    userID: userId
+  };
+  console.log(urlDatabase);
   res.redirect('/urls');
 });
 
 //request to change the longURL associated with a given shortURL
 app.post('/urls/:shortURL', (req, res) => {
+  console.log('hey there');
   const longURL = req.body.longURL;
   const shortURL = req.params.shortURL;
+
   urlDatabase[shortURL] = longURL;
   res.redirect('/urls');
 });
