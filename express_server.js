@@ -28,10 +28,10 @@ const users = {
 
 app.get('/urls/new', (req, res) => {
   const userID = req.cookies['user_id'];
-  console.log('userID: ', userID);
+  // console.log('userID: ', userID);
 
   const userObj = users[userID];
-  console.log('userObj: ', userObj);
+  // console.log('userObj: ', userObj);
   let templateVars = {
     user: userObj,
     shortURL: req.params.shortURL,
@@ -42,8 +42,13 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+  const userID = req.cookies['user_id'];
+  // console.log('userID: ', userID);
+
+  const userObj = users[userID];
+  // console.log('userObj: ', userObj);
   let templateVars = {
-    username: req.cookies['username'],
+    user: userObj,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
@@ -54,12 +59,18 @@ app.get('/login', (req, res) => {
 
 //rendering the registration page.
 app.get('/register', (req, res) => {
+  const userID = req.cookies['user_id'];
+  // console.log('userID: ', userID);
+
+  const userObj = users[userID];
+  // console.log('userObj: ', userObj);
+
   let templateVars = {
-    username: req.cookies['username'],
+    user: userObj,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
-  console.log('registering');
+  // console.log('registering');
   res.render('urls_user', templateVars);
 });
 
@@ -80,10 +91,10 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const userID = req.cookies['user_id'];
-  console.log('userID: ', userID);
+  // console.log('userID: ', userID);
 
   const userObj = users[userID];
-  console.log('userObj: ', userObj);
+  // console.log('userObj: ', userObj);
 
   let templateVars = {
     user: userObj,
@@ -149,8 +160,18 @@ app.post('/login', (req, res) => {
 
 //logging out
 app.post('/logout', (req, res) => {
+  // console.log('req: ', req);
+  // console.log('res: ', res);
+  // console.log('req.body: ', req.body);
+  // console.log('res.body: ', res.body);
+  console.log('req.params: ', req.params);
+  console.log('res.params: ', res.params);
+  // console.log('userObj: ', userObj);
+  // console.log('user: ', user);
+  // console.log('cookie: ', cookie);
+  // console.log('cookies: ', cookies);
   // let newUser = req.body.username;
-  res.clearCookie('username', newUser).redirect('/urls');
+  res.clearCookie('user_id', req.cookies['user_id']).redirect('/urls');
 });
 
 //Registering a new user.
