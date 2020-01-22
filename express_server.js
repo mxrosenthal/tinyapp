@@ -61,21 +61,22 @@ app.get('/login', (req, res) => {
 
 //rendering the registration page.
 app.get('/register', (req, res) => {
-  if (!userID) {
-    res.redirect('/register');
-  }
+  // if (!userID) {
+  //   res.redirect('/register');
+  // }
 
   const userID = req.cookies['user_id'];
   // console.log('userID: ', userID);
 
   const userObj = users[userID];
   // console.log('userObj: ', userObj);
-
   let templateVars = {
     user: userObj,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
+
+  // console.log(templateVars);
   // console.log('registering');
   res.render('urls_user', templateVars);
 });
@@ -83,10 +84,8 @@ app.get('/register', (req, res) => {
 app.get('/urls/:shortURL', (req, res) => {
   const userID = req.cookies['user_id'];
   // console.log('userID: ', userID);
-
   const userObj = users[userID];
   // console.log('user: ', userObj);
-
   let templateVars = {
     user: userObj,
     shortURL: req.params.shortURL,
@@ -173,11 +172,18 @@ app.post('/login', (req, res) => {
   console.log(password);
   if (userLoggingIn.password === password) {
     res.cookie('user_id', userLoggingIn.id).redirect('/urls');
+  } else {
+    //need redirect if password fails.
+    res.redirect('/login');
   }
 });
 
 //logging out
 app.post('/logout', (req, res) => {
+  console.log('POST logout');
+  console.log('req.cookie: ', req.cookie);
+  console.log('req.cookies: ', req.cookies);
+
   res.clearCookie('user_id', req.cookies['user_id']).redirect('/urls');
 });
 

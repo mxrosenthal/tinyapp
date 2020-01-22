@@ -23,25 +23,23 @@
       </div>
     </div>
     <% if(user) {%>
-    <form class="form-inline" action="/logout" method="POST">
-      <div class="form-group mb-2">
-        <label for="currentUser" style="padding: 20px"
-          >Logged in as <%= user.email %>
+      <form class="form-inline" action="/logout" method="POST">
+        <div class="form-group mb-2">
+        <label for="logout" style="padding: 20px"
+          >Logged in as <%= user.id %>
         </label>
         <button type="submit" class="btn btn-primary">Log out</button>
-      </div>
-    </form>
+      </form>
+    </div>
+
     <% } else{ %>
 
-    <div class="form-group mb-2">
+    <div class="form-group mb-2" style="padding-right: 20px;">
       <a href="/login" class="btn btn-primary">Log in</a>
     </div>
 
     <div class="form-group mb-2">
-      <label for="longURL" class="label label-default"></label>
-      <button type="submit" class="btn btn-primary" style="margin: 0px 20px">
-        Register
-      </button>
+      <a href="/register" class="btn btn-primary">Register</a>
     </div>
     <% } %>
   </nav>
