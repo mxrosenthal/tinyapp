@@ -54,7 +54,7 @@ app.get('/login', (req, res) => {
   };
   // console.log('logging in?');
   // res.render('urls_user', templateVars);
-  res.render('urls_user', templateVars);
+  res.render('urls_login', templateVars);
 });
 
 //rendering the registration page.
