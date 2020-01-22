@@ -27,8 +27,13 @@ const users = {
 // });
 
 app.get('/urls/new', (req, res) => {
+  const userID = req.cookies['user_id'];
+  console.log('userID: ', userID);
+
+  const userObj = users[userID];
+  console.log('userObj: ', userObj);
   let templateVars = {
-    username: req.cookies['username'],
+    user: userObj,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
@@ -63,7 +68,7 @@ app.get('/urls/:shortURL', (req, res) => {
   // console.log('userID: ', userID);
 
   const userObj = users[userID];
-  console.log('user: ', userObj);
+  // console.log('user: ', userObj);
 
   let templateVars = {
     user: userObj,
@@ -74,8 +79,14 @@ app.get('/urls/:shortURL', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
+  const userID = req.cookies['user_id'];
+  console.log('userID: ', userID);
+
+  const userObj = users[userID];
+  console.log('userObj: ', userObj);
+
   let templateVars = {
-    username: req.cookies['username'],
+    user: userObj,
     urls: urlDatabase
   };
   // console.log(templateVars);
