@@ -23,9 +23,38 @@
 
     <main style="margin: 1em;">
       <h3>Login</h3>
-      <form class="form-inline" action="/login" method="POST">
+
+      <form action="/login" method="POST">
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            class="form-control"
+            type="email"
+            name="email"
+            placeholder="email@gmail.com"
+            style="width: 300px"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="Password">Password:</label>
+          <input
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="P@$$w0rd"
+            style="width: 300px"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary">Log in</button>
+      </form>
+
+      <!-- <form action="/login" method="POST">
         <div class="form-group mb-2">
           <label for="email">Email</label>
+        </div>
+        <div>
           <input
             class="form-control"
             type="email"
@@ -34,7 +63,9 @@
             style="width: 300px; margin: 1em"
             required
           />
-          <label for="Password">Password</label><br />
+        </div>
+        <div><label for="Password">Password</label></div>
+        <div>
           <input
             class="form-control"
             type="password"
@@ -43,9 +74,9 @@
             style="width: 300px; margin: 1em"
             required
           />
-          <button type="submit" class="btn btn-primary">Login</button>
         </div>
-      </form>
+        <div><button type="submit" class="btn btn-primary">Login</button></div>
+      </form> -->
     </main>
     <!-- Bootstrap JS -->
     <script
