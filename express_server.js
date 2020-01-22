@@ -14,7 +14,13 @@ const urlDatabase = {
   // '9sm5xK': 'http://www.google.com'
 };
 
-const activeUsers = {};
+const users = {
+  // "user2RandomID": {
+  //   id: "user2RandomID",
+  //   email: "user2@example.com",
+  //   password: "dishwasher-funk"
+  // }
+};
 
 // app.get('/login', (req, res) => {
 //   res.redirect('/login');
@@ -38,6 +44,17 @@ app.get('/login', (req, res) => {
   };
   // console.log('logging in?');
   // res.render('urls_user', templateVars);
+  res.render('urls_user', templateVars);
+});
+
+//rendering the registration page.
+app.get('/register', (req, res) => {
+  let templateVars = {
+    username: req.cookies['username'],
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
+  };
+  console.log('registering');
   res.render('urls_user', templateVars);
 });
 
@@ -116,7 +133,28 @@ app.post('/login', (req, res) => {
 //logging out
 app.post('/logout', (req, res) => {
   // let newUser = req.body.username;
-  res.clearCookie('username').redirect('/urls');
+  res.clearCookie('username', newUser).redirect('/urls');
+});
+
+//Registering a new user.
+app.post('/register', (req, res) => {
+  if (req.body.email === '' || req.body.password === '') {
+    redirect('/urls');
+  }
+
+  if (emailLookup(req.body.email, users)) {
+    res.send('Error 400: Email already exists...');
+  }
+
+  let userID = generateRandomString();
+  users[userID] = {};
+
+  users[userID]['id'] = userID;
+  users[userID]['email'] = req.body.email;
+  users[userID]['password'] = req.body.password;
+  console.log(users);
+
+  res.cookie('user_id', userID).redirect('/urls');
 });
 
 app.listen(PORT, () => {
@@ -127,4 +165,16 @@ function generateRandomString() {
   return Math.round(Math.pow(36, 6 + 1) - Math.random() * Math.pow(36, 6))
     .toString(36)
     .slice(1);
+}
+
+//should passin an email str and an obj to check against. if that string strictly equals an email in the
+//users object, return false.
+function emailLookup(newEmail, users) {
+  for (const user in users) {
+    if (users[user].email === newEmail) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

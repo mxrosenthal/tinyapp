@@ -22,19 +22,28 @@
     <%- include('partials/_header') %>
 
     <main style="margin: 1em;">
-      <h3>Log in</h3>
-      <form class="form-inline" id="new_user" action="/login" method="POST">
+      <h3>Register New User</h3>
+      <form class="form-inline" id="new_user" action="/register" method="POST">
         <div class="form-group mb-2">
-          <label for="longURL">Enter your username:</label>
+          <label for="email">eMail:</label>
           <input
             id="new_user"
             class="form-control"
-            type="text"
-            name="username"
-            placeholder="hotShenannigans493"
+            type="email"
+            name="email"
+            placeholder="teapot@gmail.com"
             style="width: 300px; margin: 1em"
           />
-          <button type="submit" class="btn btn-primary">Log in</button>
+          <label for="password">Password:</label>
+          <input
+            id="new_user"
+            class="form-control"
+            type="password"
+            name="password"
+            placeholder="P4$$w0rd"
+            style="width: 300px; margin: 1em"
+          />
+          <button type="submit" class="btn btn-primary">Register</button>
         </div>
       </form>
     </main>
