@@ -59,8 +59,14 @@ app.get('/register', (req, res) => {
 });
 
 app.get('/urls/:shortURL', (req, res) => {
+  const userID = req.cookies['user_id'];
+  // console.log('userID: ', userID);
+
+  const userObj = users[userID];
+  console.log('user: ', userObj);
+
   let templateVars = {
-    username: req.cookies['username'],
+    user: userObj,
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };

@@ -22,11 +22,11 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if(username) {%>
+    <% if(user) {%>
     <form class="form-inline" action="/logout" method="POST">
       <div class="form-group mb-2">
         <label for="currentUser" style="padding: 20px"
-          >Logged in as <%= username %>
+          >Logged in as <%= user.email %>
         </label>
         <button type="submit" class="btn btn-primary">Log out</button>
       </div>
