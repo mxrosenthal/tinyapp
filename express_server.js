@@ -127,7 +127,6 @@ app.post('/urls', (req, res) => {
     longURL: longURL,
     userID: userId
   };
-  console.log(urlDatabase);
   res.redirect('/urls');
 });
 
