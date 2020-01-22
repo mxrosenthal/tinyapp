@@ -23,6 +23,14 @@ app.get('/urls/new', (req, res) => {
   const userID = req.cookies['user_id'];
   const userObj = users[userID];
 
+  //if statement checks whether a user is logged in. The link to
+  //this page should be invisible if not logged in, so if someone bypasses
+  //it by googling /urls/new they will fail this check and be redirected
+  //to the login page.
+  if (!userID) {
+    res.redirect('/login');
+  }
+
   let templateVars = {
     user: userObj,
     shortURL: req.params.shortURL,
