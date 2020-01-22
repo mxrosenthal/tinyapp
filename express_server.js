@@ -15,11 +15,11 @@ const urlDatabase = {
 };
 
 const users = {
-  // "user2RandomID": {
-  //   id: "user2RandomID",
-  //   email: "user2@example.com",
-  //   password: "dishwasher-funk"
-  // }
+  user2RandomID: {
+    id: 'user2RandomID',
+    email: 'user2@example.com',
+    password: 'dishwasher-funk'
+  }
 };
 
 // app.get('/login', (req, res) => {
@@ -42,6 +42,8 @@ app.get('/urls/new', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
+  // console.log('userID: ', userID);
+
   const userID = req.cookies['user_id'];
   // console.log('userID: ', userID);
 
@@ -59,6 +61,10 @@ app.get('/login', (req, res) => {
 
 //rendering the registration page.
 app.get('/register', (req, res) => {
+  if (!userID) {
+    res.redirect('/register');
+  }
+
   const userID = req.cookies['user_id'];
   // console.log('userID: ', userID);
 
@@ -154,33 +160,34 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 // 3. in CDT go to 'application' at the top. then 'cookies' on the left.
 //    and the submission should be visible.
 app.post('/login', (req, res) => {
-  let newUser = req.body.username;
-  res.cookie('username', newUser).redirect('/urls');
+  let emailToFind = req.body.email;
+
+  let userLoggingIn;
+  for (const userID in users) {
+    if (users[userID].email === emailToFind) {
+      userLoggingIn = users[userID];
+    }
+  }
+  console.log('userLoggingIn: ', userLoggingIn);
+  let password = req.body.password;
+  console.log(password);
+  if (userLoggingIn.password === password) {
+    res.cookie('user_id', userLoggingIn.id).redirect('/urls');
+  }
 });
 
 //logging out
 app.post('/logout', (req, res) => {
-  // console.log('req: ', req);
-  // console.log('res: ', res);
-  // console.log('req.body: ', req.body);
-  // console.log('res.body: ', res.body);
-  console.log('req.params: ', req.params);
-  console.log('res.params: ', res.params);
-  // console.log('userObj: ', userObj);
-  // console.log('user: ', user);
-  // console.log('cookie: ', cookie);
-  // console.log('cookies: ', cookies);
-  // let newUser = req.body.username;
   res.clearCookie('user_id', req.cookies['user_id']).redirect('/urls');
 });
 
 //Registering a new user.
 app.post('/register', (req, res) => {
   if (req.body.email === '' || req.body.password === '') {
-    redirect('/urls');
+    redirect('/register');
   }
 
-  if (emailLookup(req.body.email, users)) {
+  if (emailExistsAlready(req.body.email, users)) {
     res.send('Error 400: Email already exists...');
   }
 
@@ -205,9 +212,10 @@ function generateRandomString() {
     .slice(1);
 }
 
-//should passin an email str and an obj to check against. if that string strictly equals an email in the
+//should pass in an email str and an obj to check against.
+//If that string strictly equals an email in the
 //users object, return false.
-function emailLookup(newEmail, users) {
+function emailExistsAlready(newEmail, users) {
   for (const user in users) {
     if (users[user].email === newEmail) {
       return true;

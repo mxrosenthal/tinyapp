@@ -32,20 +32,17 @@
       </div>
     </form>
     <% } else{ %>
-    <form class="form-inline" id="new_user" action="/login" method="POST">
-      <div class="form-group mb-2">
-        <label for="longURL" class="label label-default"></label>
-        <input
-          id="new_user"
-          class="form-control"
-          type="text"
-          name="username"
-          placeholder="username"
-          style="width: 300px; margin: 1em"
-        />
-        <button type="submit" class="btn btn-primary">Log in</button>
-      </div>
-    </form>
+
+    <div class="form-group mb-2">
+      <a href="/login" class="btn btn-primary">Log in</a>
+    </div>
+
+    <div class="form-group mb-2">
+      <label for="longURL" class="label label-default"></label>
+      <button type="submit" class="btn btn-primary" style="margin: 0px 20px">
+        Register
+      </button>
+    </div>
     <% } %>
   </nav>
 </header>
