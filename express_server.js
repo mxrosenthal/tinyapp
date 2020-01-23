@@ -47,7 +47,8 @@ app.get('/urls/new', (req, res) => {
 
   let templateVars = {
     user: userObj,
-    urls: urlDatabase
+    shortURL: req.params.shortURL,
+    longURL: urlDatabase[req.params.shortURL]
   };
 
   res.render('urls_new', templateVars);
@@ -79,17 +80,27 @@ app.get('/register', (req, res) => {
   res.render('urls_user', templateVars);
 });
 
+// accessed by hitting the edit button.
 app.get('/urls/:shortURL', (req, res) => {
   const userID = req.cookies['user_id'];
   const userObj = users[userID];
+  // console.log(urlDatabase);
+  // console.log('req.cookies.user_id: ', req.cookies.user_id);
 
+  // const shorty = req.params.shortURL;
+  // console.log('urlDatabase[shorty].userID: ', urlDatabase[shorty].userID);
+
+  // if (urlDatabase[shorty].userID === req.cookies.user_id) {
   let templateVars = {
     user: userObj,
+    // urls: urlDatabase
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   };
-
+  // console.log('templateVars.shortURL: ', templateVars.shortURL);
+  // console.log('templateVars.longURL.longURL: ', templateVars.longURL.longURL);
   res.render('urls_show', templateVars);
+  // }
 });
 
 app.get('/urls', (req, res) => {
@@ -141,9 +152,21 @@ app.post('/urls/:shortURL', (req, res) => {
   // console.log('hey there');
   const longURL = req.body.longURL;
   const shortURL = req.params.shortURL;
+  // console.log('longURL: ', longURL);
+  // console.log('shortURL: ', shortURL);
 
-  urlDatabase[shortURL] = longURL;
-  res.redirect('/urls');
+  let user = getUserFromReq(req);
+  console.log('user: ', user);
+
+  console.log('req.cookies.user_id: ', req.cookies.user_id);
+  console.log('urlDatabase[shortURL].userID: ', urlDatabase[shortURL].userID);
+  if (urlDatabase[shortURL].userID === req.cookies.user_id) {
+    urlDatabase[shortURL].longURL = longURL;
+    console.log(urlDatabase);
+    res.redirect('/urls');
+  } else {
+    res.send('Need to be logged in to edit links.');
+  }
 });
 
 //Delete longURL with it's shortURL key from the database.
@@ -155,9 +178,10 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
   if (urlDatabase[shorty].userID === req.cookies.user_id) {
     delete urlDatabase[shorty];
+    res.redirect('/urls');
+  } else {
+    res.send('Need to be logged in to delete links.');
   }
-
-  res.redirect('/urls');
 });
 
 //add users logged into a cookie. You can check this cookie in the CDT.
