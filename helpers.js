@@ -7,10 +7,6 @@ function getUserByEmail(email, database) {
   return null;
 }
 
-function getUserFromReq(req) {
-  return req.session.user_id;
-}
-
 //should pass in an email str and an obj to check against.
 //If that string strictly equals an email in the
 //users object, return false.
@@ -32,7 +28,6 @@ function generateRandomString() {
 
 module.exports = {
   getUserByEmail,
-  getUserFromReq,
   generateRandomString,
   emailExistsAlready
 };
