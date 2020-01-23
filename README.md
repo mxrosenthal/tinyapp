@@ -4,9 +4,11 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Log in Page."] Log in Page. (https://github.com/mxrosenthal/tinyapp/blob/master/docs/wideLOGIN.png?raw=true)
+!["Log in Page."](https://github.com/mxrosenthal/tinyapp/blob/master/docs/wideLOGIN.png?raw=true)
 !["Create a new TinyURL."](https://github.com/mxrosenthal/tinyapp/blob/master/docs/NewURL.png?raw=true)
 !["Display the URLs you have saved."](https://github.com/mxrosenthal/tinyapp/blob/master/docs/MyURLs.png?raw=true)
+
+Images depict the login page, where you can submit a link for 'tiny-fying', as well as your list of saved tiny URLS.
 
 ## Dependencies
 
