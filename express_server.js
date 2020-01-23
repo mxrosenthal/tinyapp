@@ -12,12 +12,12 @@ app.set('view engine', 'ejs');
 const urlDatabase = {
   aaaaaa: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
   bbbbbb: { longURL: 'https://www.google.ca', userID: 'jim' },
-  cccccc: { longURL: 'https://www.tsnABC.ca', userID: 'buttyButtler' },
-  dddddd: { longURL: 'https://www.googleHIVE.ca', userID: 'jim' },
-  wwwwww: { longURL: 'https://www.tsnDEB.ca', userID: 'user2RandomID' },
-  qqqqqq: { longURL: 'https://www.googleDEB.ca', userID: 'user2RandomID' },
-  tttttt: { longURL: 'https://www.tsnMARK.ca', userID: 'buttyButtler' },
-  yyyyyy: { longURL: 'https://www.googleMARK.ca', userID: 'buttyButtler' }
+  cccccc: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  dddddd: { longURL: 'https://www.google.ca', userID: 'jim' },
+  wwwwww: { longURL: 'https://www.tsn.ca', userID: 'user2RandomID' },
+  qqqqqq: { longURL: 'https://www.google.ca', userID: 'user2RandomID' },
+  tttttt: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  yyyyyy: { longURL: 'https://www.google.ca', userID: 'buttyButtler' }
 };
 
 const users = {
@@ -121,7 +121,13 @@ app.get('/urls.json', (req, res) => {
 });
 
 app.get('/u/:shortURL', (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  // console.log('req.params.shortURL: ', req.params.shortURL);
+  // const longURL = urlDatabase[req.params.shortURL].longURL;
+  const shortURL = req.params.shortURL;
+  const longURL = urlDatabase[shortURL].longURL;
+  console.log(longURL);
+  // let user = getUserFromReq(req);
+  // console.log(user);
   res.redirect(longURL);
 });
 
