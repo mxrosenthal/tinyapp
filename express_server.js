@@ -10,8 +10,14 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  // b6UTxQ: { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
-  // i3BoGr: { longURL: "https://www.google.ca", userID: "aJ48lW" }
+  aaaaaa: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  bbbbbb: { longURL: 'https://www.google.ca', userID: 'jim' },
+  cccccc: { longURL: 'https://www.tsnABC.ca', userID: 'buttyButtler' },
+  dddddd: { longURL: 'https://www.googleHIVE.ca', userID: 'jim' },
+  wwwwww: { longURL: 'https://www.tsnDEB.ca', userID: 'user2RandomID' },
+  qqqqqq: { longURL: 'https://www.googleDEB.ca', userID: 'user2RandomID' },
+  tttttt: { longURL: 'https://www.tsnMARK.ca', userID: 'buttyButtler' },
+  yyyyyy: { longURL: 'https://www.googleMARK.ca', userID: 'buttyButtler' }
 };
 
 const users = {
@@ -20,9 +26,9 @@ const users = {
     email: 'user2@example.com',
     password: '123'
   },
-  user5RandomID: {
+  buttyButtler: {
     id: 'buttyButtler',
-    email: 'handCramp@shebangs.com',
+    email: 'handCramp@yahoo.com',
     password: '456'
   }
 };
@@ -89,13 +95,14 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const userID = req.cookies['user_id'];
+  console.log('userID: ', userID);
   const userObj = users[userID];
 
   let templateVars = {
     user: userObj,
     urls: urlDatabase
   };
-
+  console.log(templateVars);
   res.render('urls_index', templateVars);
 });
 
@@ -156,21 +163,36 @@ app.post('/login', (req, res) => {
   let emailToFind = req.body.email;
   let password = req.body.password;
   let userLoggingIn;
-
+  console.log('email to find: ', emailToFind);
+  console.log('password: ', password);
   for (const userID in users) {
+    console.log(userID);
+    // console.log(users);
+
+    console.log('1:', emailToFind);
+    console.log('2:', users[userID].email);
     if (users[userID].email === emailToFind) {
       userLoggingIn = users[userID];
-    } else {
-      //email not registered. redirect to register page
-      res.send('Error 403: Email and/or password incorrect.');
     }
   }
 
+  console.log('i am in the post');
+  const user = getUserByEmail(emailToFind);
+  console.log(user);
+  if (!userLoggingIn) {
+    console.log('bad email');
+    //email not registered. redirect to register page
+    res.send('Error 403: Email and/or password incorrect.');
+  }
+  console.log('there is a user.');
   if (userLoggingIn.password === password) {
     res.cookie('user_id', userLoggingIn.id).redirect('/urls');
   } else {
+    console.log('bad password');
+
     res.send('Error 403: Email and/or password incorrect.');
   }
+  console.log('what the heck');
 });
 
 //logging out
@@ -219,4 +241,13 @@ function emailExistsAlready(newEmail, users) {
       return false;
     }
   }
+}
+
+function getUserByEmail(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return users[user];
+    }
+  }
+  return null;
 }

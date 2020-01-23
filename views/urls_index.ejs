@@ -20,7 +20,10 @@
   </head>
   <body>
     <main style="margin: 1em;">
-      <h3>My URLs</h3>
+      
+      <% if(user) {%>
+        <h3>My URLs</h3>
+
       <table class="table">
         <thead>
           <tr>
@@ -32,7 +35,23 @@
         </thead>
         <tbody>
           <% for(let url in urls) {%>
+            <!-- <% console.log('urls:', urls) %>
+            <% console.log('url:', url) %>
+            <% console.log('urls[url]: ', urls[url]) %> -->
+
+            <% console.log('[user].id: ', [user].id) %>
+            <% console.log('user.id: ', user.id) %>
+
+
+
+
+
           <tr>
+            <% if (urls[url].userID === user.id) { %>
+              <!-- <% console.log('urls[url].userID:', urls[url].userID) %>
+              <% console.log('urls[url].id:', urls[url].id) %> -->
+      
+
             <td><%= url %></td>
             <td><%= urls[url].longURL %></td>
             <td>
@@ -48,8 +67,15 @@
             </td>
           </tr>
           <% } %>
+          <% } %>
         </tbody>
       </table>
+
+      <% } else{ %>
+        <div>Uh-oh! Only members can use the app. Login or register to get started. </div>
+      <% } %>
+
+
     </main>
     <!-- Bootstrap JS-->
     <script
