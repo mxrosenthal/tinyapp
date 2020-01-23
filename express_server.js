@@ -3,6 +3,7 @@ const app = express();
 const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -10,27 +11,27 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  aaaaaa: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  bbbbbb: { longURL: 'https://www.google.ca', userID: 'jim' },
-  cccccc: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  dddddd: { longURL: 'https://www.google.ca', userID: 'jim' },
-  wwwwww: { longURL: 'https://www.tsn.ca', userID: 'user2RandomID' },
-  qqqqqq: { longURL: 'https://www.google.ca', userID: 'user2RandomID' },
-  tttttt: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  yyyyyy: { longURL: 'https://www.google.ca', userID: 'buttyButtler' }
+  // aaaaaa: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  // bbbbbb: { longURL: 'https://www.google.ca', userID: 'jim' },
+  // cccccc: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  // dddddd: { longURL: 'https://www.google.ca', userID: 'jim' },
+  // wwwwww: { longURL: 'https://www.tsn.ca', userID: 'user2RandomID' },
+  // qqqqqq: { longURL: 'https://www.google.ca', userID: 'user2RandomID' },
+  // tttttt: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
+  // yyyyyy: { longURL: 'https://www.google.ca', userID: 'buttyButtler' }
 };
 
 const users = {
-  user2RandomID: {
-    id: 'user2RandomID',
-    email: 'user2@example.com',
-    password: '123'
-  },
-  buttyButtler: {
-    id: 'buttyButtler',
-    email: 'handCramp@yahoo.com',
-    password: '456'
-  }
+  // user2RandomID: {
+  //   id: 'user2RandomID',
+  //   email: 'user2@example.com',
+  //   password: '123'
+  // },
+  // buttyButtler: {
+  //   id: 'buttyButtler',
+  //   email: 'handCramp@yahoo.com',
+  //   password: '456'
+  // }
 };
 
 app.get('/urls/new', (req, res) => {
@@ -199,7 +200,10 @@ app.post('/login', (req, res) => {
   let emailToFind = req.body.email;
   let password = req.body.password;
   let userLoggingIn;
-  // console.log('email to find: ', emailToFind);
+
+  const person = getUserByEmail(emailToFind);
+  console.log('user: ', person);
+
   // console.log('password: ', password);
   for (const userID in users) {
     // console.log(userID);
@@ -220,7 +224,15 @@ app.post('/login', (req, res) => {
     res.send('Error 403: Email and/or password incorrect.');
   }
   // console.log('there is a user.');
-  if (userLoggingIn.password === password) {
+
+  // const hashedPassword = bcrypt.hashSync(password, 10);
+  // console.log('hashedPassword: ', hashedPassword);
+  // console.log('userLoggingIn.password: ', userLoggingIn.password);
+
+  // if (userLoggingIn.password === users[userID].password) {
+  if (bcrypt.compareSync(password, person.password)) {
+    // returns true
+
     res.cookie('user_id', userLoggingIn.id).redirect('/urls');
   } else {
     console.log('bad password');
@@ -248,9 +260,12 @@ app.post('/register', (req, res) => {
   let userID = generateRandomString();
   users[userID] = {};
 
+  const password = req.body.password; // found in the req.params object
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  console.log(hashedPassword);
   users[userID]['id'] = userID;
   users[userID]['email'] = req.body.email;
-  users[userID]['password'] = req.body.password;
+  users[userID]['password'] = hashedPassword;
 
   res.cookie('user_id', userID).redirect('/urls');
 });
