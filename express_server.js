@@ -47,8 +47,7 @@ app.get('/urls/new', (req, res) => {
 
   let templateVars = {
     user: userObj,
-    shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]
+    urls: urlDatabase
   };
 
   res.render('urls_new', templateVars);
@@ -95,14 +94,14 @@ app.get('/urls/:shortURL', (req, res) => {
 
 app.get('/urls', (req, res) => {
   const userID = req.cookies['user_id'];
-  console.log('userID: ', userID);
+  // console.log('userID: ', userID);
   const userObj = users[userID];
 
   let templateVars = {
     user: userObj,
     urls: urlDatabase
   };
-  console.log(templateVars);
+  // console.log(templateVars);
   res.render('urls_index', templateVars);
 });
 
@@ -139,7 +138,7 @@ app.post('/urls', (req, res) => {
 
 //request to change the longURL associated with a given shortURL
 app.post('/urls/:shortURL', (req, res) => {
-  console.log('hey there');
+  // console.log('hey there');
   const longURL = req.body.longURL;
   const shortURL = req.params.shortURL;
 
@@ -150,7 +149,14 @@ app.post('/urls/:shortURL', (req, res) => {
 //Delete longURL with it's shortURL key from the database.
 app.post('/urls/:shortURL/delete', (req, res) => {
   let shorty = req.params.shortURL;
-  delete urlDatabase[shorty];
+  // console.log('res.cookie', req.cookies.user_id);
+
+  // console.log(urlDatabase[shorty].userID);
+
+  if (urlDatabase[shorty].userID === req.cookies.user_id) {
+    delete urlDatabase[shorty];
+  }
+
   res.redirect('/urls');
 });
 
@@ -163,28 +169,27 @@ app.post('/login', (req, res) => {
   let emailToFind = req.body.email;
   let password = req.body.password;
   let userLoggingIn;
-  console.log('email to find: ', emailToFind);
-  console.log('password: ', password);
+  // console.log('email to find: ', emailToFind);
+  // console.log('password: ', password);
   for (const userID in users) {
-    console.log(userID);
-    // console.log(users);
+    // console.log(userID);
+    // // console.log(users);
 
-    console.log('1:', emailToFind);
-    console.log('2:', users[userID].email);
+    // console.log('1:', emailToFind);
     if (users[userID].email === emailToFind) {
       userLoggingIn = users[userID];
     }
   }
 
-  console.log('i am in the post');
+  // console.log('i am in the post');
   const user = getUserByEmail(emailToFind);
-  console.log(user);
+  // console.log(user);
   if (!userLoggingIn) {
     console.log('bad email');
     //email not registered. redirect to register page
     res.send('Error 403: Email and/or password incorrect.');
   }
-  console.log('there is a user.');
+  // console.log('there is a user.');
   if (userLoggingIn.password === password) {
     res.cookie('user_id', userLoggingIn.id).redirect('/urls');
   } else {
@@ -192,7 +197,7 @@ app.post('/login', (req, res) => {
 
     res.send('Error 403: Email and/or password incorrect.');
   }
-  console.log('what the heck');
+  // console.log('what the heck');
 });
 
 //logging out
@@ -250,4 +255,8 @@ function getUserByEmail(email) {
     }
   }
   return null;
+}
+
+function getUserFromReq(req) {
+  return req.cookies.user_id;
 }
