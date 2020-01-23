@@ -19,29 +19,9 @@ app.use(
 
 app.set('view engine', 'ejs');
 
-const urlDatabase = {
-  // aaaaaa: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  // bbbbbb: { longURL: 'https://www.google.ca', userID: 'jim' },
-  // cccccc: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  // dddddd: { longURL: 'https://www.google.ca', userID: 'jim' },
-  // wwwwww: { longURL: 'https://www.tsn.ca', userID: 'user2RandomID' },
-  // qqqqqq: { longURL: 'https://www.google.ca', userID: 'user2RandomID' },
-  // tttttt: { longURL: 'https://www.tsn.ca', userID: 'buttyButtler' },
-  // yyyyyy: { longURL: 'https://www.google.ca', userID: 'buttyButtler' }
-};
+const urlDatabase = {};
 
-const users = {
-  // user2RandomID: {
-  //   id: 'user2RandomID',
-  //   email: 'user2@example.com',
-  //   password: '123'
-  // },
-  // buttyButtler: {
-  //   id: 'buttyButtler',
-  //   email: 'handCramp@yahoo.com',
-  //   password: '456'
-  // }
-};
+const users = {};
 
 app.get('/urls/new', (req, res) => {
   const userID = req.session.user_id;
@@ -52,7 +32,6 @@ app.get('/urls/new', (req, res) => {
   //it by googling /urls/new they will fail this check and be redirected
   //to the login page.
   if (!userID) {
-    // res.status(403);
     res.redirect('/login');
   } else {
     let templateVars = {
@@ -71,6 +50,7 @@ app.get('/login', (req, res) => {
     let templateVars = {
       user: null
     };
+
     res.render('urls_login', templateVars);
   }
 });
@@ -91,15 +71,19 @@ app.get('/register', (req, res) => {
 // accessed by hitting the edit button.
 app.get('/urls/:shortURL', (req, res) => {
   const shortURLExists = urlDatabase[req.params.shortURL];
-
-  if (
-    !req.session.user_id ||
-    !shortURLExists ||
-    shortURLExists.id !== req.session.user_id
-  ) {
-    res.redirect('/urls');
+  if (!req.session.user_id) {
+    res.send('Need to log in before you can see links.');
   }
 
+  if (!shortURLExists) {
+    res.send('That URL is not in our database.');
+  }
+
+  if (shortURLExists.userID !== req.session.user_id) {
+    res.send('You do not own that link.');
+  }
+
+  //if logged in && the shortURL's ID matches the cookie...
   if (
     req.session.user_id &&
     req.session.user_id === urlDatabase[req.params.shortURL].userID
@@ -127,6 +111,17 @@ app.get('/urls', (req, res) => {
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
   const longURL = urlDatabase[shortURL].longURL;
+  const prefix = 'http://';
+
+  if (!urlDatabase[shortURL]) {
+    res.send('The URL you are trying to access is not in our database.');
+  }
+
+  let goodURL = longURL.includes(prefix);
+  if (!goodURL) {
+    res.send("Need URL to begin with 'HTTP://' for redirect to work.");
+  }
+
   res.redirect(longURL);
 });
 
@@ -166,7 +161,7 @@ app.post('/urls/:shortURL', (req, res) => {
     const longURL = req.body.longURL;
     const shortURL = req.params.shortURL;
 
-    let user = helpers.getUserFromReq(req);
+    //Matching the id associated with the short URL to the cookie
     if (urlDatabase[shortURL].userID === req.session.user_id) {
       urlDatabase[shortURL].longURL = longURL;
       res.redirect('/urls');
@@ -174,7 +169,7 @@ app.post('/urls/:shortURL', (req, res) => {
       res.send('You do now own this short url.');
     }
   } else {
-    res.status(403).redirect('/login');
+    res.redirect('/login');
   }
 });
 
@@ -189,19 +184,14 @@ app.post('/urls/:shortURL/delete', (req, res) => {
       res.send('you are not the owner of this account.');
     }
   } else {
-    res.status(403).redirect('/login');
+    res.send('Can not delete if you are not logged in.');
   }
 });
 
-//add users logged into a cookie. You can check this cookie in the CDT.
-// 1. open chrom dev tools, clear cache if full.
-// 2. submit user_id on tinyapp.
-// 3. in CDT go to 'application' at the top. then 'cookies' on the left.
-//    and the submission should be visible.
+//add user logged in to the cookie.
 app.post('/login', (req, res) => {
   let emailToFind = req.body.email;
   let password = req.body.password;
-  let userLoggingIn;
 
   const person = helpers.getUserByEmail(emailToFind, users);
   if (!person) {
@@ -227,13 +217,14 @@ app.post('/register', (req, res) => {
     res.send('Error 400: Email already exists...');
   } else {
     let userID = helpers.generateRandomString();
-    users[userID] = {};
-
-    const password = req.body.password; // found in the req.params object
+    const password = req.body.password;
     const hashedPassword = bcrypt.hashSync(password, 10);
+
+    users[userID] = {};
     users[userID]['id'] = userID;
     users[userID]['email'] = req.body.email;
     users[userID]['password'] = hashedPassword;
+
     req.session.user_id = userID;
     res.redirect('/urls');
   }
