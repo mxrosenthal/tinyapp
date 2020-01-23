@@ -120,6 +120,21 @@ app.get('/u/:shortURL', (req, res) => {
   res.redirect(longURL);
 });
 
+app.get('/', (req, res) => {
+  const userObj = users[req.session.user_id];
+  if (userObj) {
+    res.redirect('/urls');
+  } else {
+    res.redirect('/login');
+  }
+
+  // let templateVars = {
+  //   user: userObj,
+  //   urls: urlDatabase
+  // };
+  // res.render('urls_index', templateVars);
+});
+
 //POST
 //generates random str for a given longURL
 app.post('/urls', (req, res) => {
