@@ -232,20 +232,20 @@ app.post('/login', (req, res) => {
   let password = req.body.password;
   let userLoggingIn;
 
-  const person = getUserByEmail(emailToFind);
+  const person = getUserByEmail(emailToFind, users);
   // console.log('user: ', person);
 
   // console.log('password: ', password);
-  for (const userID in users) {
-    if (users[userID].email === emailToFind) {
-      userLoggingIn = users[userID];
-    }
-  }
+  // for (const userID in users) {
+  //   if (users[userID].email === emailToFind) {
+  //     userLoggingIn = users[userID];
+  //   }
+  // }
 
   // console.log('i am in the post');
   // const user = getUserByEmail(emailToFind);
   // console.log(user);
-  if (!userLoggingIn) {
+  if (!person) {
     // console.log('bad email');
     //email not registered. redirect to register page
     res.send('Error 403: Email and/or password incorrect.');
@@ -260,7 +260,7 @@ app.post('/login', (req, res) => {
   if (bcrypt.compareSync(password, person.password)) {
     // returns true
     // console.log;
-    req.session.user_id = userLoggingIn.id;
+    req.session.user_id = person.id;
     res.redirect('/urls');
   } else {
     // console.log('bad password');
@@ -329,10 +329,23 @@ function emailExistsAlready(newEmail, users) {
   }
 }
 
-function getUserByEmail(email) {
-  for (const user in users) {
-    if (users[user].email === email) {
-      return users[user];
+const userDatabase = {
+  user2RandomID: {
+    id: 'user2RandomID',
+    email: 'user2@example.com',
+    password: '123'
+  },
+  buttyButtler: {
+    id: 'buttyButtler',
+    email: 'handCramp@yahoo.com',
+    password: '456'
+  }
+};
+
+function getUserByEmail(email, database) {
+  for (const user in database) {
+    if (database[user].email === email) {
+      return database[user];
     }
   }
   return null;
@@ -341,3 +354,6 @@ function getUserByEmail(email) {
 function getUserFromReq(req) {
   return req.session.user_id;
 }
+
+console.log(getUserByEmail('user2@example.com', userDatabase));
+console.log(getUserByEmail('handCramp@yahoo.com', userDatabase));
