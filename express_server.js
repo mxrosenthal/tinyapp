@@ -52,6 +52,7 @@ app.get('/urls/new', (req, res) => {
   //it by googling /urls/new they will fail this check and be redirected
   //to the login page.
   if (!userID) {
+    // res.status(403);
     res.redirect('/login');
   } else {
     let templateVars = {
@@ -89,6 +90,16 @@ app.get('/register', (req, res) => {
 
 // accessed by hitting the edit button.
 app.get('/urls/:shortURL', (req, res) => {
+  const shortURLExists = urlDatabase[req.params.shortURL];
+
+  if (
+    !req.session.user_id ||
+    !shortURLExists ||
+    shortURLExists.id !== req.session.user_id
+  ) {
+    res.redirect('/urls');
+  }
+
   if (
     req.session.user_id &&
     req.session.user_id === urlDatabase[req.params.shortURL].userID
@@ -99,9 +110,8 @@ app.get('/urls/:shortURL', (req, res) => {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL]
     };
+
     res.render('urls_show', templateVars);
-  } else {
-    res.redirect('/urls');
   }
 });
 
@@ -127,12 +137,6 @@ app.get('/', (req, res) => {
   } else {
     res.redirect('/login');
   }
-
-  // let templateVars = {
-  //   user: userObj,
-  //   urls: urlDatabase
-  // };
-  // res.render('urls_index', templateVars);
 });
 
 //POST
