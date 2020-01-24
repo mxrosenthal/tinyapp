@@ -5,8 +5,10 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const cookieSession = require('cookie-session');
 const helpers = require('./helpers');
+const methodOverride = require('method-override');
 
 //middleware
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cookieSession({
@@ -158,7 +160,7 @@ app.post('/urls', (req, res) => {
 });
 
 //request to change the longURL associated with a given shortURL
-app.post('/urls/:shortURL', (req, res) => {
+app.put('/urls/:shortURL', (req, res) => {
   if (req.session.user_id) {
     const longURL = req.body.longURL;
     const shortURL = req.params.shortURL;
@@ -176,11 +178,16 @@ app.post('/urls/:shortURL', (req, res) => {
 });
 
 //Delete longURL with it's shortURL key from the database.
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/delete', (req, res) => {
   if (req.session.user_id) {
     let shorty = req.params.shortURL;
+    // console.log(shorty);
+    // console.log(urlDatabase);
     if (urlDatabase[shorty].userID === req.session.user_id) {
+      console.log(urlDatabase);
+      console.log('urlDatabase[shorty]: ', urlDatabase[shorty]);
       delete urlDatabase[shorty];
+      console.log(urlDatabase);
       res.redirect('/urls');
     } else {
       res.send('you are not the owner of this account.');

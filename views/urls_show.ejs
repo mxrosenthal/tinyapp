@@ -22,9 +22,10 @@
           Tiny URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a>
         </p>
       </div>
-      <div><form method="POST" action="/urls/<%= shortURL %>">
-         <label for="new-url">New URL:</label>
-         <input 
+      <div>
+        <form method="POST" action="/urls/<%= shortURL %>?_method=PUT">
+          <label for="new-url">New URL:</label>
+          <input
             id="new-url"
             class="form-control"
             type="text"
@@ -33,9 +34,11 @@
             style="width: 300px; margin: 1em; display: inline-block;"
             required
           />
-        <button type="submit">
-          Update
-        </button></div>
+          <button type="submit">
+            Update
+          </button>
+        </form>
+      </div>
       <div class="card-footer text-muted"></div>
     </div>
     <!-- Bootstrap JS -->
