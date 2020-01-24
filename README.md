@@ -18,6 +18,7 @@ Images depict the login page (top), where you can submit a link for 'tiny-fying'
 - bcrypt
 - body-parser
 - cookie-session
+- method-override
 
 ## Getting Started
 
