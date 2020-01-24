@@ -109,19 +109,22 @@ app.get('/urls', (req, res) => {
 
 app.get('/u/:shortURL', (req, res) => {
   const shortURL = req.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
-  const prefix = 'http://';
+  const prefix1 = 'http://';
+  const prefix2 = 'https://';
 
   if (!urlDatabase[shortURL]) {
     res.send('The URL you are trying to access is not in our database.');
   }
 
-  let goodURL = longURL.includes(prefix);
-  if (!goodURL) {
-    res.send("Need URL to begin with 'HTTP://' for redirect to work.");
+  const longURL = urlDatabase[shortURL].longURL;
+
+  if (longURL.includes(prefix1) || longURL.includes(prefix2)) {
+    res.redirect(longURL);
   }
 
-  res.redirect(longURL);
+  res.send(
+    "Need URL to begin with 'http://' or 'https://' for redirect to work."
+  );
 });
 
 app.get('/', (req, res) => {
