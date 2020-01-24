@@ -26,7 +26,7 @@
         <a class="nav-item nav-link" href="/urls/new">Create New Tiny URL</a>
       </div>
     </div>
-      <form class="form-inline" action="/logout" method="POST">
+      <form class="form-inline" action="/logout?_method=PUT" method="POST">
         <div class="form-group mb-2">
         <label for="logout" style="padding: 20px"
           >Hello <%= user.email %>

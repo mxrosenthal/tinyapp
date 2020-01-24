@@ -140,7 +140,7 @@ app.get('/', (req, res) => {
 
 //POST
 //generates random str for a given longURL
-app.post('/urls', (req, res) => {
+app.put('/urls', (req, res) => {
   if (req.session.user_id) {
     if (!req.body.longURL) {
       res.redirect('/urls/new');
@@ -198,7 +198,7 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
 });
 
 //add user logged in to the cookie.
-app.post('/login', (req, res) => {
+app.put('/login', (req, res) => {
   let emailToFind = req.body.email;
   let password = req.body.password;
 
@@ -215,7 +215,7 @@ app.post('/login', (req, res) => {
 });
 
 //logging out
-app.post('/logout', (req, res) => {
+app.put('/logout', (req, res) => {
   req.session = null;
   res.redirect('/login');
 });
